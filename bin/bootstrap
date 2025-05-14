@@ -1,26 +1,40 @@
 #!/bin/sh
-if ! xcode-select -p > /dev/null 2>&1; then
-  echo "Xcode command line tools not found. Installing..."
-  xcode-select --install
-else
-  echo "Xcode command line tools already installed."
-fi
-sudo xcodebuild -license
+if [ "$(uname)" == "Darwin" ]; then
+    if ! xcode-select -p > /dev/null 2>&1; then
+    echo "Xcode command line tools not found. Installing..."
+    xcode-select --install
+    else
+    echo "Xcode command line tools already installed."
+    fi
+    sudo xcodebuild -license
 
-# install homebrew
-if command -v brew > /dev/null 2>&1; then
-  echo "Homebrew already installed."
-else
-  echo "Homebrew not found. Proceeding to install..."
+    # install homebrew
+    if command -v brew > /dev/null 2>&1; then
+        echo "Homebrew already installed."
+    else
+        echo "Homebrew not found. Proceeding to install..."
+    fi
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
 
 # check for ansible, else install it with homebrew
 if ! command -v ansible &> /dev/null; then
-  echo "Ansible not found. Installing..."
-  brew install ansible
+    if [ "$(uname)" == "Darwin" ]; then
+        echo "Ansible not found. Installing..."
+        brew install ansible
+    elif [ "$(uname)" == "Linux" ]; then
+        echo "Ansible not found. Installing..."
+        sudo apt-get update
+        sudo apt-get install software-properties-common
+        sudo apt-add-repository ppa:ansible/ansible
+        sudo apt-get update
+        sudo apt-get install -y ansible
+    else
+        echo "Unsupported operating system."
+    fi
 else
-  echo "Ansible already installed."
+    echo "Ansible already installed."
 fi
 
 # /usr/sbin/softwareupdate --install-rosetta
