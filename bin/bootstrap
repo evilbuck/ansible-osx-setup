@@ -1,10 +1,32 @@
 #!/bin/sh
-xcode-select --install
+if ! xcode-select -p > /dev/null 2>&1; then
+  echo "Xcode command line tools not found. Installing..."
+  xcode-select --install
+else
+  echo "Xcode command line tools already installed."
+fi
 sudo xcodebuild -license
-/usr/sbin/softwareupdate --install-rosetta
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3 get-pip.py
-sudo pip3 install --ignore-installed ansible
-ansible-galaxy install -r requirements.yml
+
+# install homebrew
+if command -v brew > /dev/null 2>&1; then
+  echo "Homebrew already installed."
+else
+  echo "Homebrew not found. Proceeding to install..."
+fi
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# check for ansible, else install it with homebrew
+if ! command -v ansible &> /dev/null; then
+  echo "Ansible not found. Installing..."
+  brew install ansible
+else
+  echo "Ansible already installed."
+fi
+
+# /usr/sbin/softwareupdate --install-rosetta
+# curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+# python3 get-pip.py
+# sudo pip3 install --ignore-installed ansible
+# ansible-galaxy install -r requirements.yml
 
 ansible-playbook -i "localhost," -c local ansible_osx.yml --ask-become-pass
