@@ -101,9 +101,7 @@
       args:
         creates: "/usr/local/bin/ruby"
     - name: Install Gems with Mise
-      shell: gem install bundler
-        gem install rails
-        gem install rubocop
+      shell: gem install bundler rails rubocop
       args:
         creates: "/usr/local/bin/ruby"
 
