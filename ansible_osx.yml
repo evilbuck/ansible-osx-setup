@@ -112,14 +112,31 @@
       args:
         creates: "/usr/local/bin/ruby"
     - name: Install Gems with Mise
-      shell:
-        gem install rails bundler rubocop
-        # gem install bundler
-        # gem install cocoapods
-        # gem install rubocop
-        # gem install solargraph
+      shell: gem install bundler
+        gem install rails
+        gem install rubocop
       args:
         creates: "/usr/local/bin/ruby"
+
+    # - name: Install Zed Editor for MacOS
+    #   when: ansible_facts['platform'] == "Darwin"
+    #   block:
+    #     - name: Download Zed Editor
+    #       shell: curl -L https://zed.dev/download/mac -o /tmp/zed.zip
+    #       curl -L https://zed.dev/api/releases/stable/0.185.16/Zed-aarch64.dmg?browserId=196ce3fdd72169b-0773a1ceeb2656-19525636-157188-196ce3fdd7312c6 -o /tmp/zed.dmg
+    #       args:
+    #         creates: "/tmp/zed.zip"
+    #     - name: Install Zed Editor
+    #       shell: brew install zed
+    #       args:
+    #         creates: "/usr/local/bin/zed"
+    # - name: Install Zed Editor for Linux
+    #   when: ansible_facts['platform'] == "Linux"
+    #   block:
+    #     - name: Install Zed Editor
+    #       shell: sudo apt-get install zed
+    #       args:
+    #         creates: "/usr/bin/zed"
 
     # - name: "Create a default ZSH configuration"
     #   template:
